@@ -7,9 +7,20 @@ from django.http import Http404
 # you can use class based views or function based views
 
 # %%%%%%%%%
-# in this views we have stuided to things &&& Function Views and Class Based Views
-# you can use just on
+# in this views we have stuided two things &&& Function Views and Class Based Views
+# you canjust use one
 # %%%%%%%%%%%
+class ProductFeaturedListView(ListView):
+    # queryset = Product.objects.all()
+    template_name = "products/list.html"
+    def get_queryset(self,*args,**kwargs):
+        return Product.objects.all().featured()
+
+class ProductFeaturedDetailView(DetailView):
+    queryset = Product.objects.all().featured()
+    template_name = "products/featured_detail.html"
+    # def get_queryset(self,*args,**kwargs):
+    #     return Product.objects.featured()
 
 
 class ProductListView(ListView):
