@@ -1,7 +1,18 @@
 {% extends "base.html" %}
 {% block content %}
-  {{object.title}}<br>
+<div class="container">
+  <div class="row">
+    <div class="col">
+  <h1>{{object.title}}</h1>
+  <p>{{object.timestamp|date:"d M Y ,"}} at {{object.timestamp|date:"H:i A. "}}{{object.timestamp|timesince}} ago </p>
+
+  <!-- <p style="color:black;">{{object.timestamp}}  {{object.timestamp|timesince}} ago</p> -->
+  {{ object.description|linebreaks }}<br/>
   {% if object.image %}
   <img src="{{object.image.url}}" alt="">
   {% endif %}
+
+</div>
+</div>
+</div>
 {% endblock %}
