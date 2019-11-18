@@ -1,4 +1,7 @@
-{{object.title}}<br>
-{% if object.image %}
-<img src="{{object.image.url}}" alt="">
-{% endif %}
+{% extends "base.html" %}
+{% block content %}
+  {{object.title}}<br>
+  {% if object.image %}
+  <img src="{{object.image.url}}" alt="">
+  {% endif %}
+{% endblock %}
