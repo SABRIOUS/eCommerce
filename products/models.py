@@ -1,4 +1,6 @@
 from django.db import models
+from django.db.models import Q
+
 import random
 import os
 from .utils import unique_slug_generator
@@ -23,14 +25,17 @@ class ProductQuerySet(models.query.QuerySet):
     def active(self):
         return self.filter(active=True)
 
+    def search(self,query):
+        lookups = Q(title__icontains=query)| Q(description__icontains=query)
+        return self.filter(lookups).distinct()
 
 class ProductManger(models.Manager):
     def get_queryset(self):
         return ProductQuerySet(self.model,using=self._db)
     def all(self):
         return self.get_queryset().active()
-    # def features(self):
-    #     return self.get_queryset().featured()
+    def features(self):
+        return self.get_queryset().featured()
 
     def get_by_id(self,id):
         #Product.objects == self.queryset() in shell
@@ -39,7 +44,11 @@ class ProductManger(models.Manager):
             return qs.first()
         return None
 
-
+    def search(self,query):
+        lookups = (Q(title__icontains=query)|
+                  Q(description__icontains=query)|
+                  Q(price__icontains=query))
+        return self.filter(lookups).distinct()
 
 class Product(models.Model):
     title = models.CharField(max_length=120)
