@@ -72,6 +72,9 @@ class Product(models.Model):
     def __str__(self):
         return self.title
 
+    @property
+    def name(self):
+        return self.title
 
 def product_pre_save_reveiver(sender, instance,*args,**kwargs):
     if not instance.slug:

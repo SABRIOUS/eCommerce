@@ -20,12 +20,18 @@ class CartManager(models.Manager):
             request.session['cart_id'] = cart_obj.id
         return cart_obj, new_obj
 
+    def new(self, user=None):
+        user_obj = None
+        if user is not None:
+            if user.is_authenticated:
+                user_obj = user
+        return self.model.objects.create(user=user_obj)
 
 class Cart(models.Model):
     user = models.ForeignKey(User,null=True,blank=True,on_delete=models.CASCADE)
     products = models.ManyToManyField(Product,blank=True)
     subtotal = models.DecimalField(default=0.00,max_digits=100,decimal_places=2)
-    total = models.DecimalField(default=0.00,max_digits=100,decimal_places=2)    
+    total = models.DecimalField(default=0.00,max_digits=100,decimal_places=2)
     updated = models.DateTimeField(auto_now=True)
     timestamp = models.DateTimeField(auto_now_add=True)
 
@@ -50,6 +56,9 @@ m2m_changed.connect(m2m_changed_cart_reveiver,sender=Cart.products.through)
 
 
 def pre_save_cart_reveiver(sender, instance,*args,**kwargs):
-    instance.total = instance.subtotal + 10
+    if instance.subtotal > 0:
+        instance.total = instance.subtotal + 10
+    else:
+        instance.total = 0.00
 
 pre_save.connect(pre_save_cart_reveiver,sender=Cart)
